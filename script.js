@@ -6,7 +6,7 @@ const initSlider = () => {
     const imageList = document.querySelector(".slider-wrapper .image-list");
     const slideButtons = document.querySelectorAll(".slider-wrapper .slide-button");
     const sliderScrollbar = document.querySelector(".timeline-container .slider-scrollbar");
-    const scrollbarThumb = sliderScrollbar.querySelector(".scrollbar-thumb");
+    //const scrollbarThumb = sliderScrollbar.querySelector(".scrollbar-thumb");
     const maxScrollLeft = imageList.scrollWidth - imageList.clientWidth;
     let maxThumbPosition;
 
@@ -99,11 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    popupOverlay.addEventListener('click', () => {
-        const popups = document.querySelectorAll('.pop-up.active');
-        popups.forEach(popup => {
-            closePopup(popup);
-        });
+    popupOverlay.addEventListener('click', (event) => {
+        //if (!event.target.matches('a')) {
+            const popups = document.querySelectorAll('.pop-up.active');
+            popups.forEach(popup => {
+                closePopup(popup);
+            });
+       // }
     });
 
     closePopupButtons.forEach(button => {
