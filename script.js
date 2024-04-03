@@ -1,4 +1,74 @@
 //Augus' part on overall website functionality
+//About us banner
+document.addEventListener('DOMContentLoaded', function() {
+    const expandButtons = document.querySelectorAll('[expand-btn]');
+    const expandedOverlays = document.querySelectorAll('.expanded-overlay');
+
+    expandButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const overlayId = button.getAttribute('expand-btn');
+            const overlay = document.getElementById(overlayId);
+            toggleOverlay(button, overlay);
+        });
+    });
+
+    function toggleOverlay(button, overlay) {
+        const isOpen = overlay.classList.contains('active');
+    
+        closeAllOverlays(); // Close all overlays first
+    
+        if (!isOpen) {
+            overlay.classList.add('active');
+            button.setAttribute('aria-expanded', 'true');// marina added: aria accessibility
+            button.textContent = '-';
+            button.style.color = '#fff';
+            button.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Change button color to black when clicked
+            overlay.style.opacity = '0'; // initial opacity 0
+            overlay.style.transform = 'translateY(100%)';
+            overlay.offsetHeight; // Trigger reflow to ensure CSS transition will be applied, otherwise no ease in effect
+            overlay.style.opacity = '1'; // Fade in effect
+            overlay.style.transform = 'translateY(40%)'; // Slide the overlay into view from the bottom (height to 40%)
+    
+            // Move the member image upwards by 40% with ease-in effect
+            const memberImage = button.parentElement.querySelector('.member-photo');
+            memberImage.style.transition = 'transform 0.5s ease-in-out';
+            memberImage.style.transform = 'translateY(-25%)';
+    
+            // Hide the h1 and h2 elements
+            const headlines = document.querySelector('.headlines');
+            headlines.style.opacity = '0';
+        }
+    }
+    
+    function closeAllOverlays() {
+        expandedOverlays.forEach(overlay => {
+            if (overlay.classList.contains('active')) {
+                overlay.style.opacity = '0'; // Start the fade-out animation
+                overlay.style.transform = 'translateY(100%)'; // Start the slide-out animation
+                setTimeout(() => {
+                    overlay.classList.remove('active'); // Remove the active class after the animation completes
+                }, 500); // Adjust the timeout to match the duration of the transition
+            }
+        });
+        // Show the h1 and h2 elements
+        const headlines = document.querySelector('.headlines');
+        headlines.style.opacity = '1';
+    
+        // Move the member images back to their original positions with ease-out effect
+        expandButtons.forEach(button => {
+            const memberImage = button.parentElement.querySelector('.member-photo');
+            memberImage.style.transition = 'transform 0.5s ease-in-out';
+            memberImage.style.transform = 'translateY(0)';
+            
+            button.textContent = '+';
+            button.style.color = '#fff';
+            button.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'; // Reset button color to white
+        });
+    }
+        
+    
+});
+
 
 // Interactive Timeline Scroller
 // Timeline
@@ -90,7 +160,7 @@ function redirectToPage(url) {
 document.addEventListener('DOMContentLoaded', function() {
     const openPopupButtons = document.querySelectorAll('[data-popup-target]');
     const closePopupButtons = document.querySelectorAll('[data-close-button]');
-    const popupOverlay = document.getElementById('pop-up-overlay');
+    const popupOverlay = document.querySelector('.pop-up-overlay');
 
     openPopupButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -113,10 +183,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // marina added: keyboard accessibility for popup modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const popups = document.querySelectorAll('.pop-up.active');
+            popups.forEach(popup => {
+                closePopup(popup);
+            });
+        }
+    });
+
     function openPopup(popup) {
         if (popup == null) return;
         popup.classList.add('active');
         popupOverlay.classList.add('active');
+        trapFocus(popup); 
     }
 
     function closePopup(popup) {
@@ -124,6 +205,38 @@ document.addEventListener('DOMContentLoaded', function() {
         popup.classList.remove('active');
         popupOverlay.classList.remove('active');
     }
+
+     //marina added: keyboard accessibility for popup trapping
+     function trapFocus(popup) {
+        const focusableElements = 'button, a';
+        const firstFocusableElement = popup.querySelectorAll(focusableElements)[0];
+        const focusableContent = popup.querySelectorAll(focusableElements);
+        const lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+        popup.addEventListener('keydown', function(e) {
+            let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+            if (!isTabPressed) {
+                return;
+            }
+
+            if (e.shiftKey) { // if shift key pressed for shift + tab combination
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus(); // add focus for the last focusable element
+                    e.preventDefault();
+                }
+            } else { // if tab key is pressed
+                if (document.activeElement === lastFocusableElement) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
+                    firstFocusableElement.focus(); // add focus for the first focusable element
+                    e.preventDefault();
+                }
+            }
+        });
+
+        firstFocusableElement.focus();
+    }
+
+
 });
 
 
@@ -132,11 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleMenu() {
     var menu = document.querySelector('.menu');
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+     //marina added: change the "aria-expanded" attribute
+    var menuToggle = document.querySelector('.menu-toggle');
+    var isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', !isExpanded);
 }
 
 function closeMenuOnClickOutside(event) {
     var menu = document.querySelector('.menu');
-    var menuToggle = document.querySelector('.menu-toggle');
+    var menuToggle = document.querySelector('.menu-toggle');    
     
     if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
         menu.style.display = 'none';
@@ -145,6 +262,17 @@ function closeMenuOnClickOutside(event) {
 
 document.addEventListener('click', closeMenuOnClickOutside);
 
+// Marina added: keyboard events for screen reader
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Tab') {
+        var menu = document.querySelector('.menu');
+        var menuToggle = document.querySelector('.menu-toggle');
+        if (!menu.contains(document.activeElement) && document.activeElement !== menuToggle) {
+            menu.style.display = 'none';
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+    }
+});
 
 // Review Slider functionality
 let currentReviewIndex = 0;
@@ -217,4 +345,4 @@ document.getElementById("contact-form").addEventListener("submit", function(even
    
 
 
-//Nimish's and Birte's part on interactve model
+
