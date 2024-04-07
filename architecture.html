@@ -286,9 +286,13 @@
                     src="models/sagrada-final.glb" camera-controls
                     tone-mapping="commerce" poster="models/cathedral.webp" shadow-intensity="1.27"
                     environment-image="legacy" exposure="1.14" reveal="manual" shadow-softness="0.57" camera-controls
-                    auto-rotate-delay="0" alt="A 3D model of the Basílica de la Sagrada Familía.">
+                    auto-rotate-delay="0" alt="A 3D model of the Basílica de la Sagrada Familía."  aria-describedby="model-description">
                     <div id="lazy-load-poster" slot="poster"></div>
                     <button id="button-load" slot="poster" type="button" class="button-dark">Load 3D model</button>
+                    <!-- added only screen reader can read text -->
+                    <div id="model-description" class="visually-hidden">
+                        This complete and elaborate 3D model of the Basílica de la Sagrada Família is one solid beige colour with a smooth matte finish, yet is made up of a significant amount of distinct structural elements and ornamental details. Each façade is distinct in thematic appearance and faces a different direction away from the structure, while each tower varies in height and grows taller the closer it stands towards the centre of the model. The towers have a cylindrical shape—directly contrasting the incredibly angular look of the rest of the model, yet eventually reach sharp upward points that are topped with unique ornate embellishments. Geometric shapes can also be found all throughout the detailing of the model, even in representing the cathedral’s many biblical scenes, with additional shaded cutouts in place of every little window and doorway, further adding depth to the model itself. Much like the real world cathedral, this model also extends outward from the base of the façades, representing the pavement from each of the entrances.
+                    </div>
 
                     <button class="Hotspot" aria-label="Open information about The Crypt" slot="hotspot-1" data-position="-2.6019222978963024m -0.3706023531638649m 0.7337541096154104m" data-normal="-1.509957883172319e-7m 0m 0.9999999999999887m" data-target="2.384867731750965m -0.2011009164701808m -2.853318706883946m" data-orbit="-45deg 90deg 1m" data-zoom="90deg" data-visibility-attribute="visible"  data-material="8">
                         <div class="HotspotAnnotation" data-material="8">The Crypt</div>
